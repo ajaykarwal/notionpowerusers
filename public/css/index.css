@@ -9,16 +9,21 @@
 
 /* Theme colors */
 :root {
+	--color-white: #fff;
 	--color-gray-20: #e0e0e0;
 	--color-gray-50: #c0c0c0;
 	--color-gray-90: #333;
+	--color-black: #000;
 
-	--background-color: #fff;
+	--accent: #eb763a;
+
+	--background-color: var(--color-white);
 
 	--text-color: var(--color-gray-90);
-	--text-color-link: #082840;
-	--text-color-link-active: #5f2b48;
-	--text-color-link-visited: #17050f;
+	--text-color-link: var(--accent);
+	--text-color-link-hover: #ee651f;
+	--text-color-link-active: #ff5600;
+	--text-color-link-visited: #c66635;
 
 	--syntax-tab-size: 2;
 }
@@ -50,12 +55,16 @@ body {
 	font-family: var(--font-family);
 	color: var(--text-color);
 	background-color: var(--background-color);
+	font-size: 18px;
 }
 html {
 	overflow-y: scroll;
 }
 body {
-	max-width: 60em;
+	max-width: 50em;
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+	height: 100vh;
 }
 
 picture {
@@ -67,6 +76,14 @@ img {
 	height: auto;
 }
 
+hr {
+	max-width: 20em;
+	margin: 2em auto;
+	background-color: var(--color-gray-20);
+	border: 0;
+	height: 1px;
+}
+
 /* https://www.a11yproject.com/posts/how-to-hide-content/ */
 .visually-hidden {
 	clip: rect(0 0 0 0);
@@ -76,6 +93,21 @@ img {
 	position: absolute;
 	white-space: nowrap;
 	width: 1px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 600;
+	margin-top: 2rem;
+}
+h1 {
+	font-size: 3rem;
+}
+h2 {
+	font-size: 2rem;
 }
 
 p:last-child {
@@ -92,10 +124,12 @@ li {
 a[href] {
 	color: var(--text-color-link);
 }
-a[href]:visited {
+/* a[href]:visited {
 	color: var(--text-color-link-visited);
+} */
+a[href]:hover {
+	color: var(--text-color-link-hover);
 }
-a[href]:hover,
 a[href]:active {
 	color: var(--text-color-link-active);
 }
@@ -108,12 +142,21 @@ main :first-child {
 }
 
 header {
-	border-bottom: 1px dashed var(--color-gray-20);
+	border-bottom: 1px solid var(--color-gray-20);
 }
 header:after {
 	content: "";
 	display: table;
 	clear: both;
+}
+footer {
+	padding: 1rem;
+	font-size: 0.7rem;
+	text-align: center;
+	border-top: 1px solid var(--color-gray-20);
+}
+footer a[href] {
+	color: var(--color-gray-50);
 }
 
 .links-nextprev {
@@ -151,31 +194,42 @@ pre:not([class*="language-"]) {
 }
 code {
 	word-break: break-all;
+	padding: 3px 5px;
+	border-radius: 3px;
+	color: var(--color-black);
+	background-color: #fbedca;
 }
 
 /* Header */
 header {
 	display: flex;
-	gap: 1em 0.5em;
-	flex-wrap: wrap;
+	justify-content: space-between;
 	align-items: center;
-	padding: 1em;
+	padding: 1em 0;
+	margin-bottom: 2rem;
 }
 .home-link {
 	font-size: 1em; /* 16px /16 */
 	font-weight: 700;
 	margin-right: 2em;
+	margin-left: 1em;
 }
 .home-link:link:not(:hover) {
 	text-decoration: none;
 }
 
 /* Nav */
+nav {
+	flex-grow: 1;
+	text-align: right;
+}
 .nav {
 	display: flex;
+	justify-content: end;
 	padding: 0;
 	margin: 0;
 	list-style: none;
+	font-weight: 700;
 }
 .nav-item {
 	display: inline-block;
@@ -183,6 +237,7 @@ header {
 }
 .nav-item a[href]:not(:hover) {
 	text-decoration: none;
+	color: var(--color-black);
 }
 .nav a[href][aria-current="page"] {
 	text-decoration: underline;
@@ -192,19 +247,16 @@ header {
 .postlist {
 	list-style: none;
 	padding: 0;
-	padding-left: 1.5rem;
 }
 .postlist-item {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: baseline;
-	counter-increment: start-from -1;
-	margin-bottom: 1em;
+	margin-bottom: 2em;
 }
 .postlist-item:before {
 	display: inline-block;
 	pointer-events: none;
-	content: "" counter(start-from, decimal-leading-zero) ". ";
 	line-height: 100%;
 	text-align: right;
 	margin-left: -1.5rem;
@@ -218,11 +270,9 @@ header {
 	word-spacing: -0.5px;
 }
 .postlist-link {
-	font-size: 1.1875em; /* 19px /16 */
-	font-weight: 700;
+	font-size: 1.5rem;
+	font-weight: 600;
 	flex-basis: calc(100% - 1.5rem);
-	padding-left: 0.25em;
-	padding-right: 0.5em;
 	text-underline-position: from-font;
 	text-underline-offset: 0;
 	text-decoration-thickness: 1px;
@@ -245,12 +295,15 @@ header {
 
 /* Tags list */
 .post-metadata {
-	display: inline-flex;
+	display: flex;
 	flex-wrap: wrap;
 	gap: 0.5em;
 	list-style: none;
-	padding: 0;
+	padding: 0 0 10px 0;
 	margin: 0;
+	margin-bottom: 2rem;
+	font-size: 0.8rem;
+	border-bottom: 1px dashed var(--color-gray-20);
 }
 .post-metadata time {
 	margin-right: 1em;
